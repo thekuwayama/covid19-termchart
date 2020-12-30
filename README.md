@@ -21,6 +21,8 @@ $ go get -u -v github.com/thekuwayama/covid19-termchart
 $ covid19-termchart
 ```
 
+![image](https://user-images.githubusercontent.com/42881635/103377767-a8a11680-4b23-11eb-84ce-a6eb19715763.png)
+
 
 ## License
 
