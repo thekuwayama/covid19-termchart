@@ -1,16 +1,12 @@
-package termui
+package plotter
 
 import (
+	"bytes"
 	"fmt"
-	"image"
-	"image/png"
-	"io/ioutil"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/otiai10/gat/render"
 	chart "github.com/wcharczuk/go-chart/v2"
 	"golang.org/x/xerrors"
 )
@@ -46,10 +42,10 @@ func parse(csv string) (*chartValue, error) {
 	return &chartValue{x: x, y: y}, nil
 }
 
-func Plot(csv string) error {
+func Plot(csv string) ([]byte, error) {
 	xy, err := parse(csv)
 	if err != nil {
-		return xerrors.Errorf("Failed to parse csv: %+w", err)
+		return nil, xerrors.Errorf("Failed to parse csv: %+w", err)
 	}
 
 	graph := chart.Chart{
@@ -73,34 +69,11 @@ func Plot(csv string) error {
 		},
 	}
 
-	f, err := ioutil.TempFile("", "output*.png")
+	bb := bytes.NewBufferString("")
+	err = graph.Render(chart.PNG, bb)
 	if err != nil {
-		return xerrors.Errorf("Failed to touch tmp file: %+w", err)
-	}
-	defer func(f *os.File) {
-		f.Close()
-		os.Remove(f.Name())
-	}(f)
-
-	err = graph.Render(chart.PNG, f)
-	if err != nil {
-		return xerrors.Errorf("Failed to render image: %+w", err)
+		return nil, xerrors.Errorf("Failed to render image: %+w", err)
 	}
 
-	f.Seek(0, 0)
-	img, err := png.Decode(f)
-	if err != nil {
-		return xerrors.Errorf("Failed to read image file: %+w", err)
-	}
-
-	err = printImage(img)
-	if err != nil {
-		return xerrors.Errorf("Failed to print image: %+w", err)
-	}
-	return nil
-}
-
-func printImage(img image.Image) error {
-	iterm := &render.ITerm{}
-	return iterm.Render(os.Stdout, img)
+	return bb.Bytes(), nil
 }
