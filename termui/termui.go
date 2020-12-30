@@ -77,7 +77,10 @@ func Plot(csv string) error {
 	if err != nil {
 		return xerrors.Errorf("Failed to touch tmp file: %+w", err)
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		f.Close()
+		os.Remove(f.Name())
+	}(f)
 
 	err = graph.Render(chart.PNG, f)
 	if err != nil {
