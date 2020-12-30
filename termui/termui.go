@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"io"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -80,9 +79,13 @@ func Plot(csv string) error {
 	}
 	defer f.Close()
 
-	graph.Render(chart.PNG, f)
+	err = graph.Render(chart.PNG, f)
+	if err != nil {
+		return xerrors.Errorf("Failed to render image: %+w", err)
+	}
+
 	f.Seek(0, 0)
-	img, err := readImage(f)
+	img, err := png.Decode(f)
 	if err != nil {
 		return xerrors.Errorf("Failed to read image file: %+w", err)
 	}
@@ -92,12 +95,6 @@ func Plot(csv string) error {
 		return xerrors.Errorf("Failed to print image: %+w", err)
 	}
 	return nil
-}
-
-func readImage(f *os.File) (image.Image, error) {
-	var r io.Reader
-	r = f
-	return png.Decode(r)
 }
 
 func printImage(img image.Image) error {
