@@ -5,5 +5,5 @@
 *.dylib
 *.test
 *.out
-covid19
+covid19-termchart
 go.sum
