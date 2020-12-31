@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"flag"
 	"image"
 	"image/png"
 	"log"
@@ -9,20 +10,21 @@ import (
 	"os"
 
 	"github.com/otiai10/gat/render"
-	"github.com/thekuwayama/covid19-termchart/fetcher"
-	"github.com/thekuwayama/covid19-termchart/plotter"
+	"github.com/thekuwayama/covid19-termchart/c19"
 )
 
-const OpenDataUrl = "https://www3.nhk.or.jp/n-data/opendata/coronavirus/nhk_news_covid19_domestic_daily_data.csv"
+var days = flag.Int("day", 365, "period to aggregate")
 
 func Run() {
-	f := fetcher.New(http.DefaultClient)
-	csv, err := f.Do(OpenDataUrl)
+	flag.Parse()
+
+	f := c19.NewFetcher(http.DefaultClient)
+	csv, err := f.Fetch(c19.OpenDataUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	b, err := plotter.Plot(csv)
+	b, err := c19.Plot(csv, *days)
 	if err != nil {
 		log.Fatal(err)
 	}

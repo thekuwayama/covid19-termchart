@@ -1,4 +1,4 @@
-package fetcher
+package c19
 
 import (
 	"io/ioutil"
@@ -8,6 +8,8 @@ import (
 	"golang.org/x/xerrors"
 )
 
+const OpenDataUrl = "https://www3.nhk.or.jp/n-data/opendata/coronavirus/nhk_news_covid19_domestic_daily_data.csv"
+
 type Fetcher struct {
 	httpClient HttpClient
 }
@@ -16,12 +18,12 @@ type HttpClient interface {
 	Get(string) (*http.Response, error)
 }
 
-func New(c HttpClient) *Fetcher {
+func NewFetcher(c HttpClient) *Fetcher {
 	f := &Fetcher{httpClient: c}
 	return f
 }
 
-func (fetcher *Fetcher) Do(s string) (string, error) {
+func (fetcher *Fetcher) Fetch(s string) (string, error) {
 	u, err := url.Parse(s)
 	if err != nil {
 		return "", xerrors.Errorf("Failed to parse URL: %+w", err)

@@ -1,4 +1,4 @@
-package plotter
+package c19
 
 import (
 	"bytes"
@@ -16,11 +16,15 @@ type chartValue struct {
 	y []float64
 }
 
-func parse(csv string) (*chartValue, error) {
+func parse(csv string, days int) (*chartValue, error) {
 	x := []float64{}
 	y := []float64{}
 	lines := strings.Split(strings.ReplaceAll(csv, "\r\n", "\n"), "\n")[1:] // skip header
-	for _, l := range lines {
+	for i, l := range lines {
+		if i > days {
+			break
+		}
+
 		xy := strings.Split(l, ",")
 		if len(xy) != 5 {
 			continue
@@ -42,8 +46,8 @@ func parse(csv string) (*chartValue, error) {
 	return &chartValue{x: x, y: y}, nil
 }
 
-func Plot(csv string) ([]byte, error) {
-	xy, err := parse(csv)
+func Plot(csv string, days int) ([]byte, error) {
+	xy, err := parse(csv, days)
 	if err != nil {
 		return nil, xerrors.Errorf("Failed to parse csv: %+w", err)
 	}
