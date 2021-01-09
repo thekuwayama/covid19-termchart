@@ -53,6 +53,7 @@ func Plot(csv string, days int) ([]byte, error) {
 	}
 
 	graph := chart.Chart{
+		Title: "Number of infected people in Japan (NHK summary)",
 		XAxis: chart.XAxis{
 			TickPosition: chart.TickPositionBetweenTicks,
 			ValueFormatter: func(v interface{}) string {
@@ -60,6 +61,10 @@ func Plot(csv string, days int) ([]byte, error) {
 				typedDate := chart.TimeFromFloat64(typed)
 				return fmt.Sprintf("%d/%d/%d", typedDate.Year(), typedDate.Month(), typedDate.Day())
 			},
+		},
+		YAxis: chart.YAxis{
+			Name:           "Number of infected people in Japan /day",
+			ValueFormatter: chart.IntValueFormatter,
 		},
 		Series: []chart.Series{
 			chart.ContinuousSeries{
