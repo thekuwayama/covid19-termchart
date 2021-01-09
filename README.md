@@ -8,6 +8,7 @@
 
 - https://www3.nhk.or.jp/news/special/coronavirus/data-all/
 
+
 ## Install
 
 ```bash
@@ -17,11 +18,14 @@ $ go get -u -v github.com/thekuwayama/covid19-termchart
 
 ## Usage
 
-```
-$ covid19-termchart
+```bash
+$ covid19-termchart -help
+Usage of covid19-termchart:
+  -day int
+    	period to aggregate (default 365)
 ```
 
-![image](https://user-images.githubusercontent.com/42881635/103377767-a8a11680-4b23-11eb-84ce-a6eb19715763.png)
+![image](https://user-images.githubusercontent.com/42881635/104087803-c39f2380-52a5-11eb-9853-b45c6f276c9b.png)
 
 
 ## License
